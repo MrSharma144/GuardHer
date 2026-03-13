@@ -1,38 +1,57 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { registerUser, setAuthToken } from "../services/auth";
-import { User, Lock } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
+import { User, Lock, Mail } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 export default function Signup() {
-  const [form, setForm] = useState({ fullname: "", email: "", password: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    password2: "",
+    tc: false,
+  });
+
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState(null);
-  const navigate = useNavigate();
+  const { register } = useAuth();
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setForm({ ...form, [name]: type === "checkbox" ? checked : value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMsg(null);
 
-    if (!form.fullname || !form.email || !form.password) {
+    const { name, email, password, password2, tc } = form;
+
+    if (!name || !email || !password || !password2) {
       setMsg({ type: "error", text: "Please fill all fields." });
+      return;
+    }
+
+    if (password !== password2) {
+      setMsg({ type: "error", text: "Passwords do not match." });
+      return;
+    }
+
+    if (!tc) {
+      setMsg({ type: "error", text: "Please accept terms & conditions." });
       return;
     }
 
     setLoading(true);
     try {
-      const res = await registerUser(form);
-      const { token, user } = res.data;
-      // save token and set axios default
-      localStorage.setItem("guardher_token", token);
-      setAuthToken(token);
+      await register({ name, email, password, password2, tc });
       setMsg({ type: "success", text: "Signup successful. Redirecting..." });
-      // optionally store user in app state
-      setTimeout(() => navigate("/"), 900);
     } catch (err) {
       console.error(err);
-      const message = err?.response?.data?.message || "Signup failed. Try again.";
+      const message =
+        err.data?.errors?.email?.[0] ||
+        err.data?.message ||
+        "Signup failed. Try again.";
       setMsg({ type: "error", text: message });
     } finally {
       setLoading(false);
@@ -40,53 +59,98 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0A2540] text-white px-4">
-      <form onSubmit={handleSubmit} className="w-full max-w-md bg-[#0F172A] p-6 rounded-xl shadow-lg">
-        <h2 className="text-2xl font-semibold text-[#C4B5FD] mb-4">Create an account</h2>
+    <div className="min-h-screen flex items-center justify-center bg-navy text-offwhite px-4 py-8">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-md bg-midnight p-8 rounded-2xl shadow-2xl border border-charcoal my-auto"
+      >
+        <h2 className="text-3xl font-bold text-lavender mb-6 text-center tracking-wide">
+          Create Account
+        </h2>
 
-        <label className="block mb-3">
-          <span className="text-sm text-[#F9FAFB]">Full name</span>
-          <div className="flex items-center mt-1 bg-[#071827] rounded-md px-3 py-2">
-            <User className="text-[#C4B5FD] mr-2" />
+        {/* Name */}
+        <label className="block mb-4">
+          <span className="text-sm font-medium text-offwhite/80">Full Name</span>
+          <div className="flex items-center mt-1.5 bg-navy/50 border border-charcoal rounded-lg px-4 py-3 focus-within:border-lavender transition-colors">
+            <User className="text-lavender mr-3" size={20} />
             <input
-              name="fullname"
-              value={form.fullname}
+              name="name"
+              value={form.name}
               onChange={handleChange}
-              className="bg-transparent outline-none w-full text-[#F9FAFB]"
+              className="bg-transparent outline-none w-full text-offwhite placeholder-offwhite/40"
               placeholder="Your full name"
             />
           </div>
         </label>
 
-        <label className="block mb-3">
-          <span className="text-sm text-[#F9FAFB]">Email</span>
-          <input
-            name="email"
-            type="email"
-            value={form.email}
-            onChange={handleChange}
-            className="mt-1 block w-full rounded-md border border-[#243142] bg-[#071827] px-3 py-2 text-[#F9FAFB] outline-none"
-            placeholder="you@example.com"
-          />
+        {/* Email */}
+        <label className="block mb-4">
+          <span className="text-sm font-medium text-offwhite/80">Email</span>
+          <div className="flex items-center mt-1.5 bg-navy/50 border border-charcoal rounded-lg px-4 py-3 focus-within:border-lavender transition-colors">
+            <Mail className="text-lavender mr-3" size={20} />
+            <input
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+              className="bg-transparent outline-none w-full text-offwhite placeholder-offwhite/40"
+              placeholder="you@example.com"
+            />
+          </div>
         </label>
 
+        {/* Password */}
         <label className="block mb-4">
-          <span className="text-sm text-[#F9FAFB]">Password</span>
-          <div className="flex items-center mt-1 bg-[#071827] rounded-md px-3 py-2">
-            <Lock className="text-[#C4B5FD] mr-2" />
+          <span className="text-sm font-medium text-offwhite/80">Password</span>
+          <div className="flex items-center mt-1.5 bg-navy/50 border border-charcoal rounded-lg px-4 py-3 focus-within:border-lavender transition-colors">
+            <Lock className="text-lavender mr-3" size={20} />
             <input
               name="password"
               type="password"
               value={form.password}
               onChange={handleChange}
-              className="bg-transparent outline-none w-full text-[#F9FAFB]"
-              placeholder="Choose a strong password"
+              className="bg-transparent outline-none w-full text-offwhite placeholder-offwhite/40"
+              placeholder="Strong password"
             />
           </div>
         </label>
 
+        {/* Confirm Password */}
+        <label className="block mb-6">
+          <span className="text-sm font-medium text-offwhite/80">Confirm Password</span>
+          <div className="flex items-center mt-1.5 bg-navy/50 border border-charcoal rounded-lg px-4 py-3 focus-within:border-lavender transition-colors">
+            <Lock className="text-lavender mr-3" size={20} />
+            <input
+              name="password2"
+              type="password"
+              value={form.password2}
+              onChange={handleChange}
+              className="bg-transparent outline-none w-full text-offwhite placeholder-offwhite/40"
+              placeholder="Re-enter password"
+            />
+          </div>
+        </label>
+
+        {/* Terms */}
+        <label className="flex items-center gap-3 mb-6 text-sm text-offwhite/80 cursor-pointer">
+          <input
+            type="checkbox"
+            name="tc"
+            checked={form.tc}
+            onChange={handleChange}
+            className="w-4 h-4 accent-coral rounded border-charcoal bg-navy focus:ring-coral/50"
+          />
+          <span>I agree to the terms & conditions</span>
+        </label>
+
         {msg && (
-          <div className={`mb-3 p-2 rounded ${msg.type === "error" ? "bg-red-600/10 text-red-300" : "bg-green-600/10 text-green-300"}`}>
+          <div
+            className={`mb-4 p-3 rounded-lg text-sm text-center ${
+              msg.type === "error"
+                ? "bg-red-500/10 text-red-400 border border-red-500/20"
+                : "bg-green-500/10 text-green-400 border border-green-500/20"
+            }`}
+          >
             {msg.text}
           </div>
         )}
@@ -94,13 +158,19 @@ export default function Signup() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[#FF6B6B] hover:bg-[#E55A5A] py-2 rounded-lg text-white font-semibold"
+          className="w-full bg-coral hover:bg-coral/90 transition-all py-3 rounded-xl text-navy font-bold text-lg shadow-[0_0_15px_rgba(255,107,107,0.3)] hover:shadow-[0_0_25px_rgba(255,107,107,0.5)] cursor-pointer"
         >
-          {loading ? "Creating..." : "Sign up"}
+          {loading ? "Creating..." : "Create Account"}
         </button>
 
-        <p className="mt-3 text-sm text-[#C4B5FD]">
-          Already have an account? <span className="text-[#FF6B6B] cursor-pointer" onClick={() => navigate("/login")}>Log in</span>
+        <p className="mt-6 text-center text-sm text-offwhite/70">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-coral font-medium hover:underline ml-1"
+          >
+            Log in
+          </Link>
         </p>
       </form>
     </div>

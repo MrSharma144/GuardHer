@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+@theme {
+  --color-navy: #0A2540;
+  --color-lavender: #C4B5FD;
+  --color-coral: #FF6B6B;
+  --color-offwhite: #F9FAFB;
+  --color-midnight: #0F172A;
+  --color-charcoal: #1E293B;
+  
+  --color-primary: var(--color-navy);
+  --color-secondary: var(--color-lavender);
+  --color-accent: var(--color-coral);
+  --color-background-light: var(--color-offwhite);
+  --color-background-dark: var(--color-midnight);
+  --color-text-main: var(--color-charcoal);
+}
