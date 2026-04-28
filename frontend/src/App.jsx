@@ -8,6 +8,11 @@ import Login from "./components/Login";
 import Profile from "./pages/Profile";
 import Contacts from "./pages/Contacts";
 import EmergencyHistory from "./pages/EmergencyHistory";
+import Resources from "./pages/Resources";
+import Community from "./pages/Community";
+import Support from "./pages/Support";
+import Settings from "./pages/Settings";
+import AreaReviews from "./pages/AreaReviews";
 
 // Home landing page wrapper
 const Landing = () => (
@@ -26,6 +31,9 @@ function App() {
         <Route path="/login" element={<Login/>} />
         <Route path="/" element={<Landing />} />
         <Route path="/about" element={<About />} />
+        <Route path="/resources" element={<Resources />} />
+        <Route path="/community" element={<Community />} />
+        <Route path="/support" element={<Support />} />
         
         {/* Protected Dashboard Routes */}
         <Route element={<DashboardLayout />}>
@@ -33,6 +41,8 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/emergency" element={<EmergencyHistory />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/reviews" element={<AreaReviews />} />
         </Route>
 
         

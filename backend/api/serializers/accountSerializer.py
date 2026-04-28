@@ -43,7 +43,27 @@ class UserLoginSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'name']  # Add other fields as necessary
+        fields = [
+            'id', 'email', 'name', 'phone', 'bio',
+            'emergency_contact_name', 'emergency_contact_phone',
+            'emergency_contact_relation', 'created_at'
+        ]
+        read_only_fields = ['id', 'email', 'created_at']
+
+class UserProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'name', 'phone', 'bio',
+            'emergency_contact_name', 'emergency_contact_phone',
+            'emergency_contact_relation'
+        ]
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
 
 class UserChangePasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=255, style={'input_type':'password'}, write_only=True)

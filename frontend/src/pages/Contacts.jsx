@@ -6,7 +6,7 @@ export default function Contacts() {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
-  const [formData, setFormData] = useState({ id: null, name: "", phone_number: "", relation: "" });
+  const [formData, setFormData] = useState({ id: null, name: "", email: "", phone_number: "", relation: "" });
   const [submitting, setSubmitting] = useState(false);
 
   const fetchContacts = async () => {
@@ -29,7 +29,7 @@ export default function Contacts() {
     if (contact) {
       setFormData(contact);
     } else {
-      setFormData({ id: null, name: "", phone_number: "", relation: "" });
+      setFormData({ id: null, name: "", email: "", phone_number: "", relation: "" });
     }
     setModalOpen(true);
   };
@@ -153,10 +153,18 @@ export default function Contacts() {
               </label>
               
               <label className="block">
-                <span className="text-sm font-medium text-offwhite/80 block mb-1.5">Phone Number</span>
+                <span className="text-sm font-medium text-offwhite/80 block mb-1.5">Email Address</span>
+                <div className="flex items-center bg-navy/50 border border-charcoal rounded-xl px-3 py-2.5 focus-within:border-lavender">
+                  <span className="text-lavender/70 mr-2">@</span>
+                  <input required type="email" name="email" value={formData.email} onChange={handleChange} className="bg-transparent outline-none w-full text-offwhite" placeholder="jane@example.com" />
+                </div>
+              </label>
+              
+              <label className="block">
+                <span className="text-sm font-medium text-offwhite/80 block mb-1.5">Phone Number (Optional)</span>
                 <div className="flex items-center bg-navy/50 border border-charcoal rounded-xl px-3 py-2.5 focus-within:border-lavender">
                   <Phone className="text-lavender/70 mr-2" size={18} />
-                  <input required type="tel" name="phone_number" value={formData.phone_number} onChange={handleChange} className="bg-transparent outline-none w-full text-offwhite" placeholder="+1 (555) 000-0000" />
+                  <input type="tel" name="phone_number" value={formData.phone_number} onChange={handleChange} className="bg-transparent outline-none w-full text-offwhite" placeholder="+1 (555) 000-0000" />
                 </div>
               </label>
 

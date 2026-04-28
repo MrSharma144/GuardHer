@@ -55,9 +55,9 @@ const SOSButton = () => {
 
   const sendAlert = async (lat, lng) => {
     try {
-      const response = await api.post("/emergency/", {
-        location_latitude: lat,
-        location_longitude: lng,
+      const response = await api.post("/emergency/sos-alert/", {
+        latitude: lat,
+        longitude: lng,
       });
       setAlert({
         message: "🚨 SOS Sent Successfully! Authorities and contacts have been alerted.",

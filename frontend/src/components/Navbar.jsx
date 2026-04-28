@@ -27,11 +27,17 @@ const Navbar = () => {
               <Link to="/dashboard" className="hover:text-coral transition-colors">Dashboard</Link>
               <Link to="/contacts" className="hover:text-coral transition-colors">Contacts</Link>
               <Link to="/emergency" className="hover:text-coral transition-colors">Alert History</Link>
+              <Link to="/resources" className="hover:text-coral transition-colors">Resources</Link>
+              <Link to="/community" className="hover:text-coral transition-colors">Community</Link>
+              <Link to="/support" className="hover:text-coral transition-colors">Support</Link>
             </>
           ) : (
             <>
               <Link to="/" className="hover:text-coral transition-colors">Home</Link>
               <Link to="/about" className="hover:text-coral transition-colors">About</Link>
+              <Link to="/resources" className="hover:text-coral transition-colors">Resources</Link>
+              <Link to="/community" className="hover:text-coral transition-colors">Community</Link>
+              <Link to="/support" className="hover:text-coral transition-colors">Support</Link>
             </>
           )}
         </div>
@@ -100,6 +106,9 @@ const Navbar = () => {
               <Link to="/profile" onClick={() => setIsOpen(false)} className="text-offwhite/80 hover:text-coral transition-colors">Profile</Link>
               <a href="/dashboard#contacts" onClick={() => setIsOpen(false)} className="text-offwhite/80 hover:text-coral transition-colors">Contacts</a>
               <a href="/dashboard#history" onClick={() => setIsOpen(false)} className="text-offwhite/80 hover:text-coral transition-colors">Alert History</a>
+              <Link to="/resources" onClick={() => setIsOpen(false)} className="text-offwhite/80 hover:text-coral transition-colors">Resources</Link>
+              <Link to="/community" onClick={() => setIsOpen(false)} className="text-offwhite/80 hover:text-coral transition-colors">Community</Link>
+              <Link to="/support" onClick={() => setIsOpen(false)} className="text-offwhite/80 hover:text-coral transition-colors">Support</Link>
               <button 
                 onClick={() => { logout(); setIsOpen(false); }}
                 className="flex items-center justify-center gap-2 mt-2 border border-charcoal bg-red-500/5 text-red-400 py-3 rounded-xl w-full hover:bg-red-500/10 transition-colors cursor-pointer"
@@ -111,6 +120,9 @@ const Navbar = () => {
             <>
               <Link to="/" onClick={() => setIsOpen(false)} className="text-offwhite/80 hover:text-coral transition-colors">Home</Link>
               <Link to="/about" onClick={() => setIsOpen(false)} className="text-offwhite/80 hover:text-coral transition-colors">About</Link>
+              <Link to="/resources" onClick={() => setIsOpen(false)} className="text-offwhite/80 hover:text-coral transition-colors">Resources</Link>
+              <Link to="/community" onClick={() => setIsOpen(false)} className="text-offwhite/80 hover:text-coral transition-colors">Community</Link>
+              <Link to="/support" onClick={() => setIsOpen(false)} className="text-offwhite/80 hover:text-coral transition-colors">Support</Link>
               
               <div className="flex flex-col gap-3 mt-4">
                 <Link
