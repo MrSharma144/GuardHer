@@ -1,0 +1,45 @@
+India Crime Columns:
+Report Number
+Date Reported
+Date of Occurrence
+Time of Occurrence
+City
+Crime Code
+Crime Description
+Victim Age
+Victim Gender
+Weapon Used
+Crime Domain
+Police Deployed
+Case Closed
+Date Case Closed
+
+World Crime Columns:
+Rank
+City
+Crime Index
+Safety Index
+
+Women Crime Columns:
+State/UT
+Trafficking
+Murder with Rape/Gang Rape
+Dowry Deaths
+Abetment to Suicide of Women 
+Miscarriage
+Acid Attack
+Attempt to Acid Attack
+Cruelty by Husband/relatives
+Kidnapping/Abduction
+Selling of Minor Girls 
+Buying of Minor Girls
+Rape
+Attempt to Commit Rape
+Assault to Outrage her Modesty
+Insult to the Modesty of Women
+Assault due to Dowry
+Domestic violence
+Cyber Crimes committed against women
+Sexual Violence towards girl child
+Indecent Representation of Women
+Total Crime against Women (IPC &SLL)

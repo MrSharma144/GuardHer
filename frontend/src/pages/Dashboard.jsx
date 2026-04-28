@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { ShieldAlert, Users, Phone, BellRing, Map } from 'lucide-react';
 import SOSButton from '../components/SOSButton';
 import SafetyMap from '../components/SafetyMap';
+import CrimeAnalytics from '../components/CrimeAnalytics';
 import Contacts from './Contacts';
 import EmergencyHistory from './EmergencyHistory';
 import { api } from '../services/api';
@@ -10,6 +11,7 @@ import { api } from '../services/api';
 const Dashboard = () => {
   const { user } = useAuth();
   const [recentAlerts, setRecentAlerts] = useState([]);
+  const [safetyPrediction, setSafetyPrediction] = useState(null);
 
   useEffect(() => {
     const fetchRecentAlerts = async () => {
@@ -21,6 +23,21 @@ const Dashboard = () => {
       }
     };
     fetchRecentAlerts();
+
+    // Fetch ML prediction
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            const data = await api.get(`/emergency/predict-zone/?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`);
+            setSafetyPrediction(data);
+          } catch (err) {
+            console.error('Failed to get safety prediction', err);
+          }
+        },
+        (error) => console.error(error)
+      );
+    }
   }, []);
 
   return (
@@ -33,6 +50,20 @@ const Dashboard = () => {
           </h1>
           <p className="text-offwhite/60 mt-1">Your personal safety dashboard is active and monitoring.</p>
         </header>
+
+        {safetyPrediction && (
+          <div className={`p-4 rounded-xl border flex items-center gap-4 shadow-lg ${
+            safetyPrediction.zone === 'GREEN' ? 'bg-green-500/10 border-green-500/30 text-green-400' :
+            safetyPrediction.zone === 'ORANGE' ? 'bg-orange-500/10 border-orange-500/30 text-orange-400' :
+            'bg-red-500/10 border-red-500/30 text-red-400'
+          }`}>
+            <ShieldAlert size={28} className="shrink-0" />
+            <div>
+              <h3 className="font-bold text-lg">AI Safety Prediction: {safetyPrediction.zone} ZONE</h3>
+              <p className="text-sm opacity-90">{safetyPrediction.alert_message} (Risk Score: {safetyPrediction.crime_score})</p>
+            </div>
+          </div>
+        )}
 
         <div className="bg-gradient-to-br from-navy to-midnight border border-charcoal/50 p-8 rounded-3xl shadow-xl flex flex-col items-center justify-between gap-8 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-coral/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
@@ -76,10 +107,22 @@ const Dashboard = () => {
       </section>
 
       {/* SECTION 4: HISTORY */}
-      <section id="history" className="scroll-mt-24">
+      <section id="history" className="mb-16 scroll-mt-24">
         <div className="bg-midnight/30 p-1 md:p-8 rounded-[2.5rem] border border-transparent md:border-charcoal/30">
           <EmergencyHistory isEmbedded={true} />
         </div>
+      </section>
+
+      {/* SECTION 5: AI ANALYTICS */}
+      <section id="analytics" className="scroll-mt-24">
+        <div className="flex items-center gap-3 mb-6 px-2">
+          <ShieldAlert className="text-lavender" size={28} />
+          <h2 className="text-2xl font-bold text-offwhite">Area Safety Analytics</h2>
+        </div>
+        <p className="text-offwhite/60 mb-6 px-2 max-w-2xl">
+          Powered by Machine Learning models trained on historical crime datasets to deliver accurate risk analysis.
+        </p>
+        <CrimeAnalytics />
       </section>
 
     </div>

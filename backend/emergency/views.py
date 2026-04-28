@@ -71,3 +71,34 @@ class SendSOSAlertView(views.APIView):
         )
 
         return Response({"message": "Emergency alert processed", "alert_id": alert.id, "sent": alert_sent}, status=status.HTTP_201_CREATED)
+
+class PredictZoneView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        latitude = request.query_params.get('latitude')
+        longitude = request.query_params.get('longitude')
+        
+        if not latitude or not longitude:
+            return Response({"error": "Latitude and longitude required."}, status=status.HTTP_400_BAD_REQUEST)
+            
+        try:
+            latitude = float(latitude)
+            longitude = float(longitude)
+        except ValueError:
+            return Response({"error": "Invalid coordinates."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Import ML module dynamically
+        import sys
+        import os
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        if project_root not in sys.path:
+            sys.path.append(project_root)
+            
+        try:
+            from ml_model.predict_zone import predict_safety_zone
+            result = predict_safety_zone(latitude, longitude)
+            return Response(result, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(f"ML Prediction Error: {e}")
+            return Response({"error": "Prediction service unavailable."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

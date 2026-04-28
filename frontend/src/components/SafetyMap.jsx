@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
+import { GoogleMap, useLoadScript, Marker, Circle } from '@react-google-maps/api';
 import { Loader2, Navigation, AlertTriangle } from 'lucide-react';
 import { api } from '../services/api';
 
@@ -37,6 +37,7 @@ const SafetyMap = () => {
   const [userLocation, setUserLocation] = useState(null);
   const [heatmapData, setHeatmapData] = useState([]);
   const [heatmapLayer, setHeatmapLayer] = useState(null);
+  const [prediction, setPrediction] = useState(null);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -46,6 +47,20 @@ const SafetyMap = () => {
       );
     }
   }, []);
+
+  useEffect(() => {
+    const fetchPrediction = async () => {
+      if (userLocation) {
+        try {
+          const data = await api.get(`/emergency/predict-zone/?latitude=${userLocation.lat}&longitude=${userLocation.lng}`);
+          setPrediction(data);
+        } catch (err) {
+          console.error("Failed to fetch zone prediction for map:", err);
+        }
+      }
+    };
+    fetchPrediction();
+  }, [userLocation]);
 
   useEffect(() => {
     const fetchHeatmap = async () => {
@@ -133,6 +148,20 @@ const SafetyMap = () => {
             strokeColor: '#ffffff',
             strokeWeight: 2,
           }} />
+        )}
+        
+        {userLocation && prediction && (
+          <Circle
+            center={userLocation}
+            radius={2000} // 2km radius
+            options={{
+              fillColor: prediction.zone === 'GREEN' ? '#22c55e' : prediction.zone === 'ORANGE' ? '#f97316' : '#ef4444',
+              fillOpacity: 0.15,
+              strokeColor: prediction.zone === 'GREEN' ? '#22c55e' : prediction.zone === 'ORANGE' ? '#f97316' : '#ef4444',
+              strokeOpacity: 0.4,
+              strokeWeight: 2,
+            }}
+          />
         )}
       </GoogleMap>
 
