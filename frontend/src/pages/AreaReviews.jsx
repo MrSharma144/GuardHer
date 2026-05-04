@@ -219,7 +219,13 @@ export default function AreaReviews() {
     if (wsRef.current?.readyState === WebSocket.OPEN) return;
 
     const token = localStorage.getItem("access_token") || "";
-    const ws = new WebSocket(`ws://localhost:8000/ws/reviews/?token=${token}`);
+    let wsUrl = `ws://localhost:8000/ws/reviews/?token=${token}`;
+    if (import.meta.env.VITE_API_URL) {
+      const urlObj = new URL(import.meta.env.VITE_API_URL);
+      const protocol = urlObj.protocol === "https:" ? "wss:" : "ws:";
+      wsUrl = `${protocol}//${urlObj.host}/ws/reviews/?token=${token}`;
+    }
+    const ws = new WebSocket(wsUrl);
     wsRef.current = ws;
 
     ws.onopen = () => {
