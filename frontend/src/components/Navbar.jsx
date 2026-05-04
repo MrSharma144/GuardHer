@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Shield, Menu, X, LogOut, User as UserIcon } from "lucide-react";
+import { Shield, Menu, X, LogOut, User as UserIcon, Sun, Moon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <nav className="bg-midnight/90 backdrop-blur-md text-offwhite border-b border-charcoal/50 fixed w-full top-0 z-50 transition-all duration-300">
@@ -44,6 +46,9 @@ const Navbar = () => {
 
         {/* AUTH SECTION DKTOP */}
         <div className="hidden md:flex items-center gap-4">
+          <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-lavender/10 transition-colors text-lavender cursor-pointer mr-2">
+            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
           {user ? (
             <div className="flex items-center gap-4">
               <Link to="/profile" className="flex items-center gap-2 text-offwhite/80 hover:text-lavender transition-colors">
@@ -77,13 +82,18 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* MOBILE MENU BUTTON */}
-        <button
-          className="md:hidden p-2 rounded-lg bg-navy/50 text-lavender hover:bg-navy transition-colors focus:outline-none cursor-pointer"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        {/* MOBILE MENU BUTTON & THEME TOGGLE */}
+        <div className="md:hidden flex items-center gap-3">
+          <button onClick={toggleTheme} className="p-2 rounded-lg text-lavender hover:bg-navy/50 transition-colors focus:outline-none cursor-pointer">
+            {theme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
+          </button>
+          <button
+            className="p-2 rounded-lg bg-navy/50 text-lavender hover:bg-navy transition-colors focus:outline-none cursor-pointer"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* MOBILE MENU */}
