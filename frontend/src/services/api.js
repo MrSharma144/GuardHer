@@ -22,6 +22,14 @@ class ApiService {
       const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
       const data = await response.json().catch(() => ({}));
       
+      if (response.status === 401) {
+        // Token has likely expired or is invalid
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        window.location.href = '/login';
+        throw { status: response.status, data };
+      }
+
       if (!response.ok) {
         throw { status: response.status, data };
       }

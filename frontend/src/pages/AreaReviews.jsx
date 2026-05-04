@@ -294,6 +294,27 @@ export default function AreaReviews() {
     );
   };
 
+  const fetchCoordinatesFromName = async (name) => {
+    if (!name.trim()) return;
+    setGpsLoading(true);
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(name)}&limit=1`);
+      const data = await response.json();
+      if (data && data.length > 0) {
+        setForm((p) => ({
+          ...p,
+          latitude: parseFloat(data[0].lat).toFixed(6),
+          longitude: parseFloat(data[0].lon).toFixed(6),
+        }));
+        showToast("Coordinates found for " + name, "success");
+      }
+    } catch (err) {
+      console.error("Error fetching coordinates:", err);
+    } finally {
+      setGpsLoading(false);
+    }
+  };
+
   // ── Submit Review ─────────────────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -442,6 +463,7 @@ export default function AreaReviews() {
                     type="text"
                     value={form.area_name}
                     onChange={(e) => setForm((p) => ({ ...p, area_name: e.target.value }))}
+                    onBlur={(e) => fetchCoordinatesFromName(e.target.value)}
                     placeholder="e.g. MG Road, Connaught Place"
                     maxLength={200}
                     className="w-full bg-navy/50 border border-charcoal rounded-xl pl-9 pr-4 py-3 text-offwhite placeholder-offwhite/25 text-sm focus:outline-none focus:border-lavender/60 focus:ring-1 focus:ring-lavender/30 transition-all"
@@ -505,33 +527,35 @@ export default function AreaReviews() {
                 <span className="text-xs font-semibold uppercase tracking-wider text-offwhite/50 block mb-2">
                   GPS Coordinates (Optional)
                 </span>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={form.latitude}
-                    onChange={(e) => setForm((p) => ({ ...p, latitude: e.target.value }))}
-                    placeholder="Latitude"
-                    className="flex-1 bg-navy/50 border border-charcoal rounded-xl px-3 py-2.5 text-offwhite/70 placeholder-offwhite/20 text-xs focus:outline-none focus:border-lavender/40 transition-all"
-                  />
-                  <input
-                    type="text"
-                    value={form.longitude}
-                    onChange={(e) => setForm((p) => ({ ...p, longitude: e.target.value }))}
-                    placeholder="Longitude"
-                    className="flex-1 bg-navy/50 border border-charcoal rounded-xl px-3 py-2.5 text-offwhite/70 placeholder-offwhite/20 text-xs focus:outline-none focus:border-lavender/40 transition-all"
-                  />
+                <div className="flex flex-col gap-3">
+                  <div className="flex gap-3">
+                    <input
+                      type="text"
+                      value={form.latitude}
+                      onChange={(e) => setForm((p) => ({ ...p, latitude: e.target.value }))}
+                      placeholder="Latitude"
+                      className="flex-1 w-full bg-navy/50 border border-charcoal rounded-xl px-4 py-3 text-offwhite/70 placeholder-offwhite/20 text-sm focus:outline-none focus:border-lavender/40 transition-all min-w-0"
+                    />
+                    <input
+                      type="text"
+                      value={form.longitude}
+                      onChange={(e) => setForm((p) => ({ ...p, longitude: e.target.value }))}
+                      placeholder="Longitude"
+                      className="flex-1 w-full bg-navy/50 border border-charcoal rounded-xl px-4 py-3 text-offwhite/70 placeholder-offwhite/20 text-sm focus:outline-none focus:border-lavender/40 transition-all min-w-0"
+                    />
+                  </div>
                   <button
                     type="button"
                     onClick={getGps}
                     disabled={gpsLoading}
-                    title="Auto-capture GPS"
-                    className="px-3 py-2.5 rounded-xl bg-lavender/10 border border-lavender/30 text-lavender hover:bg-lavender/20 transition-all disabled:opacity-50"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-lavender/10 border border-lavender/30 text-lavender font-bold hover:bg-lavender/20 transition-all disabled:opacity-50 text-sm"
                   >
                     {gpsLoading ? (
-                      <RefreshCw size={14} className="animate-spin" />
+                      <RefreshCw size={16} className="animate-spin" />
                     ) : (
-                      <Navigation size={14} />
+                      <Navigation size={16} />
                     )}
+                    {gpsLoading ? "Detecting Location..." : "Use Current Location"}
                   </button>
                 </div>
               </div>

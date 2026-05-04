@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import DashboardLayout from "./components/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
 import About from "./pages/About";
+import Home from "./pages/Home";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
 import Profile from "./pages/Profile";
@@ -14,14 +15,6 @@ import Support from "./pages/Support";
 import Settings from "./pages/Settings";
 import AreaReviews from "./pages/AreaReviews";
 
-// Home landing page wrapper
-const Landing = () => (
-  <div className="pt-[73px] min-h-screen bg-navy text-offwhite flex flex-col items-center justify-center p-4">
-    <h1 className="text-5xl font-black text-lavender mb-6 text-center leading-tight">Empowering Women's<br/><span className="text-coral">Safety Everywhere</span></h1>
-    <p className="text-xl text-offwhite/80 max-w-2xl text-center mb-10">GuardHer is your personal safety companion. Set up your emergency contacts and utilize our instant SOS system for immediate assistance when you need it most.</p>
-  </div>
-);
-
 function App() {
   return (
     <>
@@ -29,7 +22,7 @@ function App() {
       <Routes>
         <Route path="/signup" element={<Signup/>} />
         <Route path="/login" element={<Login/>} />
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/resources" element={<Resources />} />
         <Route path="/community" element={<Community />} />

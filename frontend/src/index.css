@@ -1,17 +1,35 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy: #0A2540;
-  --color-lavender: #C4B5FD;
-  --color-coral: #FF6B6B;
-  --color-offwhite: #F9FAFB;
-  --color-midnight: #0F172A;
-  --color-charcoal: #1E293B;
+  --color-navy: var(--theme-navy);
+  --color-lavender: var(--theme-lavender);
+  --color-coral: var(--theme-coral);
+  --color-offwhite: var(--theme-offwhite);
+  --color-midnight: var(--theme-midnight);
+  --color-charcoal: var(--theme-charcoal);
   
-  --color-primary: var(--color-navy);
-  --color-secondary: var(--color-lavender);
-  --color-accent: var(--color-coral);
-  --color-background-light: var(--color-offwhite);
-  --color-background-dark: var(--color-midnight);
-  --color-text-main: var(--color-charcoal);
+  --color-primary: var(--theme-navy);
+  --color-secondary: var(--theme-lavender);
+  --color-accent: var(--theme-coral);
+  --color-background-light: var(--theme-offwhite);
+  --color-background-dark: var(--theme-midnight);
+  --color-text-main: var(--theme-charcoal);
+}
+
+:root {
+  --theme-navy: #0A2540;
+  --theme-midnight: #0F172A;
+  --theme-charcoal: #1E293B;
+  --theme-offwhite: #F9FAFB;
+  --theme-lavender: #C4B5FD;
+  --theme-coral: #FF6B6B;
+}
+
+.light {
+  --theme-navy: #f1f5f9;
+  --theme-midnight: #ffffff;
+  --theme-charcoal: #cbd5e1;
+  --theme-offwhite: #0f172a;
+  --theme-lavender: #6366f1;
+  --theme-coral: #ef4444;
 }
