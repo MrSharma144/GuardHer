@@ -53,17 +53,21 @@ class SendSOSAlertView(views.APIView):
                 message += f"Location:\n{maps_link}\n\n"
             message += "This person may be in danger. Please try to contact them immediately."
 
-            try:
-                send_mail(
-                    subject,
-                    message,
-                    user.email,  # Set the sender as the logged-in user's email
-                    emails,
-                    fail_silently=False,
-                )
-                alert_sent = True
-            except Exception as e:
-                print(f"Error sending email: {e}")
+            import threading
+            def send_email_task():
+                try:
+                    send_mail(
+                        subject,
+                        message,
+                        settings.EMAIL_HOST_USER,  # Use authenticated email to avoid SMTP rejection
+                        emails,
+                        fail_silently=False,
+                    )
+                except Exception as e:
+                    print(f"Error sending email: {e}")
+            
+            threading.Thread(target=send_email_task).start()
+            alert_sent = True
 
         # Log alert for email sending history
         alert = EmergencyAlert.objects.create(
@@ -228,16 +232,19 @@ class NotifyRiskZoneView(views.APIView):
         message += "- Use the GuardHer SOS button if you feel in immediate danger.\n\n"
         message += "Stay safe,\nGuardHer Team"
 
-        try:
-            send_mail(
-                subject,
-                message,
-                settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@guardher.com',
-                [user.email],
-                fail_silently=False,
-            )
-            return Response({"message": "Risk zone alert email sent successfully."}, status=status.HTTP_200_OK)
-        except Exception as e:
-            print(f"Error sending risk zone email: {e}")
-            return Response({"error": "Failed to send email."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        import threading
+        def send_risk_email_task():
+            try:
+                send_mail(
+                    subject,
+                    message,
+                    settings.EMAIL_HOST_USER,
+                    [user.email],
+                    fail_silently=False,
+                )
+            except Exception as e:
+                print(f"Error sending risk zone email: {e}")
+
+        threading.Thread(target=send_risk_email_task).start()
+        return Response({"message": "Risk zone alert email sending in background."}, status=status.HTTP_200_OK)
 
