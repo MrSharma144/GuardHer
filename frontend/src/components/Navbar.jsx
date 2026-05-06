@@ -116,6 +116,7 @@ const Navbar = () => {
               <Link to="/profile" onClick={() => setIsOpen(false)} className="text-offwhite/80 hover:text-coral transition-colors">Profile</Link>
               <a href="/dashboard#contacts" onClick={() => setIsOpen(false)} className="text-offwhite/80 hover:text-coral transition-colors">Contacts</a>
               <a href="/dashboard#history" onClick={() => setIsOpen(false)} className="text-offwhite/80 hover:text-coral transition-colors">Alert History</a>
+              <Link to="/reviews" onClick={() => setIsOpen(false)} className="text-offwhite/80 hover:text-coral transition-colors">Area Reviews</Link>
               <Link to="/resources" onClick={() => setIsOpen(false)} className="text-offwhite/80 hover:text-coral transition-colors">Resources</Link>
               <Link to="/community" onClick={() => setIsOpen(false)} className="text-offwhite/80 hover:text-coral transition-colors">Community</Link>
               <Link to="/support" onClick={() => setIsOpen(false)} className="text-offwhite/80 hover:text-coral transition-colors">Support</Link>
