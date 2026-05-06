@@ -71,6 +71,42 @@ GuardHer/
 
 ---
 
+## ⚙️ Environment Variables
+
+Before running the project, you need to configure environment variables for both the frontend and backend.
+
+### Backend (`backend/.env`)
+Create a `.env` file in the `backend/` directory:
+```env
+SECRET_KEY='your-secret-key-here'
+DEBUG=False
+ALLOWED_HOSTS=your-backend-domain.onrender.com,localhost,127.0.0.1
+DATABASE_URL=postgresql://user:password@hostname:5432/dbname
+EMAIL_USER='host@gmail.com'
+EMAIL_HOST_PASSWORD='your-app-password'
+EMAIL_FROM='GuardHer <host@gmail.com>'
+```
+
+### Frontend (`frontend/.env`)
+Create a `.env` file in the `frontend/` directory:
+```env
+VITE_API_URL=http://localhost:8000/api
+VITE_GOOGLE_MAPS_API_KEY=your-google-maps-api-key
+```
+*(Note: Use the production backend URL like `https://your-backend-domain.onrender.com/api` when deploying).*
+
+---
+
+## 🧠 How It Works (Project Functioning)
+
+1. **User Interaction:** Users interact with the React-based frontend to view the safety heatmap, read/write community reviews, and trigger SOS alerts.
+2. **Real-Time Data:** The frontend communicates with the Django backend via REST API for standard requests, and Django Channels (WebSockets) for real-time safety review feeds.
+3. **Machine Learning Integration:** When requesting safety data, the backend passes location coordinates to the Scikit-Learn ML model (`model.pkl`). The model evaluates historical crime data to predict risk levels for the requested zone.
+4. **Emergency Response:** If a user triggers an SOS, the backend immediately fetches their GPS coordinates and dispatches an automated email to their registered emergency contacts.
+5. **Community Sourcing:** Users can submit real-time area reviews with GPS coordinates. These reviews are clustered to update the map's visual danger zones dynamically.
+
+---
+
 ## 🚀 How to Run Locally
 
 ### 1. Backend Setup
@@ -79,6 +115,9 @@ cd backend
 python -m venv venv
 source venv/bin/activate  # On Windows use `venv\Scripts\activate`
 pip install -r requirements.txt
+
+# Create the .env file in the backend directory
+
 python manage.py migrate
 python manage.py runserver
 ```
@@ -87,6 +126,9 @@ python manage.py runserver
 ```bash
 cd frontend
 npm install
+
+# Create the .env file in the frontend directory
+
 npm run dev
 ```
 
