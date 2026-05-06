@@ -5,6 +5,8 @@ import pandas as pd
 
 warnings.filterwarnings('ignore')
 
+_cached_model = None
+
 def get_alert_message(zone):
     messages = {
         'GREEN': "You are currently in a Safe Zone.",
@@ -21,12 +23,23 @@ def get_zone_score(zone):
     }
     return scores.get(zone, 0.5)
 
-def predict_safety_zone(latitude, longitude):
+def get_model():
+    global _cached_model
+    if _cached_model is not None:
+        return _cached_model
+        
     base_dir = os.path.dirname(os.path.abspath(__file__))
     model_path = os.path.join(base_dir, 'model.pkl')
     
+    if os.path.exists(model_path):
+        _cached_model = joblib.load(model_path)
+    return _cached_model
+
+def predict_safety_zone(latitude, longitude):
+    clf = get_model()
+    
     # Fallback to random if no model found
-    if not os.path.exists(model_path):
+    if clf is None:
         print("Model not found. Falling back to default prediction.")
         return {
             "zone": "ORANGE",
@@ -35,7 +48,6 @@ def predict_safety_zone(latitude, longitude):
         }
         
     try:
-        clf = joblib.load(model_path)
         # Create a df with feature names to avoid sklearn warnings if that was how it was trained
         X = pd.DataFrame([[latitude, longitude]], columns=['latitude', 'longitude'])
         prediction = clf.predict(X)[0]
