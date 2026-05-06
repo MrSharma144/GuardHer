@@ -114,11 +114,17 @@ class PredictZoneView(views.APIView):
             return Response({"error": "Prediction service unavailable."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+_cached_zones = None
+
 class CrimeZonesView(views.APIView):
     """Returns all city crime zones from the ML dataset for map rendering."""
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
+        global _cached_zones
+        if _cached_zones is not None:
+            return Response(_cached_zones, status=status.HTTP_200_OK)
+
         # Locate the CSV dataset relative to this file
         project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         csv_path = os.path.join(project_root, 'ml_model', 'final_crime_dataset.csv')
@@ -150,6 +156,7 @@ class CrimeZonesView(views.APIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+        _cached_zones = zones
         return Response(zones, status=status.HTTP_200_OK)
 
 
