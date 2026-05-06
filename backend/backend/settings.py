@@ -195,10 +195,17 @@ REST_FRAMEWORK = {
 
 PASSWORD_RESET_TIMEOUT = 900  # 15 minutes
 
-CORS_ALLOWed_ORIGINS = [
+CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:5174",
+    "https://guard-ksrsvw4ar-prateek-sharmas-projects.vercel.app",
 ]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.*\.vercel\.app$",
+    r"^https://.*\.onrender\.com$",
+]
+
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
     
